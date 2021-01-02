@@ -1,2 +1,2 @@
-DROP TABLE chatroom;
-DROP TABLE message
+DROP TABLE chatrooms;
+DROP TABLE messages

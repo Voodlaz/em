@@ -1,3 +1,5 @@
+mod db_conn;
+
 use actix::prelude::*;
 
 use std::time::{Duration, Instant};
@@ -87,24 +89,31 @@ async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 
-    connect();
+    let connspec = std::env::var("DATABASE_URL").expect("DATABASE_URL");
+    let manager = ConnectionManager::<PgConnection>::new(connspec);
+    let pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.");
 
-    HttpServer::new(|| {
-        App::new::data(pool.clone())
+    HttpServer::new(move || {
+        App::new()
 
-        .service(
-            fs::Files::new("/static", "./static")
-           .show_files_listing()
-        )
+            .data(pool.clone())
+            .wrap(middleware::Logger::default())
 
-        .service(
-            web::resource("/ws/").to(ws)
-        )
-        .service(
-            web::resource("/").to(index)
-        )
+            .service(
+                fs::Files::new("/static", "./static")
+                .show_files_listing()
+            )
+
+            .service(
+                web::resource("/ws/").to(ws)
+            )
+            .service(
+                web::resource("/").to(index)
+            )
     })
-        .bind("127.0.0.1:8000")?
-        .run()
-        .await
+    .bind("127.0.0.1:8000")?
+    .run()
+    .await
 }
