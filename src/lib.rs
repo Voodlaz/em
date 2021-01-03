@@ -5,4 +5,4 @@ extern crate dotenv;
 
 pub mod schema;
 pub mod models;
-pub mod db_conn;
+pub mod db;

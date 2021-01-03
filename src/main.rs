@@ -1,4 +1,4 @@
-mod db_conn;
+mod db;
 
 use actix::prelude::*;
 
@@ -10,8 +10,8 @@ use actix_files as fs;
 use tera::{Tera, Context};
 
 use diesel::PgConnection;
-use db_conn::connect;
 use diesel::r2d2::{self, ConnectionManager};
+use std::env;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
@@ -54,7 +54,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Ws {
             Ok(ws::Message::Pong(_)) => {
                 self.hb = Instant::now();
             }
-            Ok(ws::Message::Text(text)) => ctx.text(text),
+//            Ok(ws::Message::Text(text)) => ,
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
                 ctx.stop();
@@ -88,6 +88,8 @@ async fn main() -> std::io::Result<()> {
     //это тоже нужно будет поставить
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
+    dotenv::dotenv().ok();
+
 
     let connspec = std::env::var("DATABASE_URL").expect("DATABASE_URL");
     let manager = ConnectionManager::<PgConnection>::new(connspec);
