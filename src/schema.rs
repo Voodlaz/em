@@ -1,3 +1,5 @@
+use std::iter::Iterator;
+
 table! {
     chatrooms (chatroom_id) {
         chatroom_id -> Int4,

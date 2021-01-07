@@ -21,7 +21,7 @@ pub struct NewMessage {
 }
 
 #[derive(Debug, Clone, Serialize, Queryable, Insertable, Associations)]
-#[belongs_to(Chatroom)]
+//#[belongs_to(Chatroom)]
 pub struct Message {
     pub id: i32,
     pub body: String,

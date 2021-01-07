@@ -3,13 +3,18 @@ use actix_web_actors::ws;
 
 use actix_files as fs;
 use tera::{Tera, Context};
+use actix::clock::{Instant, Duration};
 
 use actix::StreamHandler;
 
 use actix::*;
 
+use actix_ws::schema::messages::dsl::messages;
+use actix_ws::db::create_message;
+
 use diesel::PgConnection;
 use diesel::r2d2::{self, ConnectionManager};
+use diesel::dsl::now;
 use std::env;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -53,14 +58,15 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Ws {
             Ok(ws::Message::Pong(_)) => {
                 self.hb = Instant::now();
             }
-            /*Ok(ws::Message::Text(text)) => {
-                /*create_message(&PgConnection, text, 6);
+            Ok(ws::Message::Text(text)) => {
+                create_message(PgConnection, text, 6);
 
-                let results = posts.filter(publish_at.lt(now))
-                    .load::<Message>(&PgConnection)
-                    .expect("Error loading posts");*/
-                ctx.text(text)
-            },*/
+                let results = messages.filter(id.lt(now))
+                    .load::<Message>(PgConnection)
+                    .expect("Error loading posts");
+
+                ctx.text(results);
+            },
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
                 ctx.stop();
