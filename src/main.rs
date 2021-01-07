@@ -1,13 +1,12 @@
-mod db;
-
-use actix::prelude::*;
-
-use std::time::{Duration, Instant};
 use actix_web::*;
 use actix_web_actors::ws;
 
 use actix_files as fs;
 use tera::{Tera, Context};
+
+use actix::StreamHandler;
+
+use actix::*;
 
 use diesel::PgConnection;
 use diesel::r2d2::{self, ConnectionManager};
@@ -49,12 +48,19 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Ws {
         match msg {
             Ok(ws::Message::Ping(msg)) => {
                 self.hb = Instant::now();
-                //ctx.pong(&msg);
+                ctx.pong(&msg);
             }
             Ok(ws::Message::Pong(_)) => {
                 self.hb = Instant::now();
             }
-//            Ok(ws::Message::Text(text)) => ,
+            /*Ok(ws::Message::Text(text)) => {
+                /*create_message(&PgConnection, text, 6);
+
+                let results = posts.filter(publish_at.lt(now))
+                    .load::<Message>(&PgConnection)
+                    .expect("Error loading posts");*/
+                ctx.text(text)
+            },*/
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
                 ctx.stop();

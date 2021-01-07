@@ -1,5 +1,5 @@
 [package]
-name = "actix_ws"
+name = "actix-ws"
 version = "0.1.0"
 authors = ["Voodlaz <47495939+Voodlaz@users.noreply.github.com>"]
 edition = "2018"

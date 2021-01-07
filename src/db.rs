@@ -23,8 +23,9 @@ pub fn create_chatroom<'a>(conn: &PgConnection, chat_name: String) -> Chatroom {
         .expect("Chatroom fail")
 }
 
-/*pub fn create_message<'a>(conn: &PgConnection, text: String, chat_id: i32) -> SQLMessage {
+pub fn create_message<'a>(conn: &PgConnection, text: String, chat_id: i32) -> Message {
     use crate::schema::messages::dsl::*;
+
 
     let new_message = NewMessage {
         body: text,
@@ -35,4 +36,4 @@ pub fn create_chatroom<'a>(conn: &PgConnection, chat_name: String) -> Chatroom {
         .values(&new_message)
         .get_result(conn)
         .expect("Message fail")
-}*/
+}
