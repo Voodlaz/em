@@ -7,6 +7,6 @@ CREATE TABLE chatrooms (
 
 CREATE TABLE messages (
   id SERIAL PRIMARY KEY,
-  body VARCHAR(500) NOT NULL,
-  chatroom_id INTEGER NOT NULL
+  creation TIMESTAMP NOT NULL,
+  body VARCHAR(500) NOT NULL
 )

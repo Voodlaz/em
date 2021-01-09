@@ -9,12 +9,17 @@ use actix::StreamHandler;
 
 use actix::*;
 
-use actix_ws::schema::messages::dsl::messages;
+
+use diesel::RunQueryDsl;
+use actix_ws::schema::{messages};
+
+use actix_ws::schema::messages::creation;
 use actix_ws::db::create_message;
 
 use diesel::PgConnection;
 use diesel::r2d2::{self, ConnectionManager};
 use diesel::dsl::now;
+use diesel::ExpressionMethods;
 use std::env;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -59,10 +64,10 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Ws {
                 self.hb = Instant::now();
             }
             Ok(ws::Message::Text(text)) => {
-                create_message(PgConnection, text, 6);
+                create_message(&conn, text);
 
-                let results = messages.filter(id.lt(now))
-                    .load::<Message>(PgConnection)
+                let results = messages::table.filter(creation.lt(now))
+                    .load::<dyn Message>(&conn)
                     .expect("Error loading posts");
 
                 ctx.text(results);

@@ -23,13 +23,12 @@ pub fn create_chatroom<'a>(conn: &PgConnection, chat_name: String) -> Chatroom {
         .expect("Chatroom fail")
 }
 
-pub fn create_message<'a>(conn: &PgConnection, text: String, chat_id: i32) -> Message {
+pub fn create_message<'a>(conn: &PgConnection, text: String) -> Message {
     use crate::schema::messages::dsl::*;
 
 
     let new_message = NewMessage {
-        body: text,
-        chatroom_id: chat_id
+        body: text
     };
 
     diesel::insert_into(messages)

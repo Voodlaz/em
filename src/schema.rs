@@ -1,5 +1,3 @@
-use std::iter::Iterator;
-
 table! {
     chatrooms (chatroom_id) {
         chatroom_id -> Int4,
@@ -10,8 +8,8 @@ table! {
 table! {
     messages (id) {
         id -> Int4,
+        creation -> Timestamp,
         body -> Varchar,
-        chatroom_id -> Int4,
     }
 }
 
