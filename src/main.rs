@@ -64,13 +64,14 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Ws {
                 self.hb = Instant::now();
             }
             Ok(ws::Message::Text(text)) => {
-                create_message(&conn, text);
+                /*create_message(&conn, text);
 
                 let results = messages::table.filter(creation.lt(now))
                     .load::<dyn Message>(&conn)
                     .expect("Error loading posts");
 
-                ctx.text(results);
+                ctx.text(results);*/
+                ctx.text(text);
             },
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
